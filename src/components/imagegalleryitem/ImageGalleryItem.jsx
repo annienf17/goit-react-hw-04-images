@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class ImageGalleryItem extends Component {
   render() {
@@ -17,3 +18,10 @@ export default class ImageGalleryItem extends Component {
     );
   }
 }
+
+ImageGalleryItem.propTypes = {
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  updateModalImage: PropTypes.func.isRequired,
+  largeImageSrc: PropTypes.string.isRequired,
+};

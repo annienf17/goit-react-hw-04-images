@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
+import { Puff } from  'react-loader-spinner'
 
-export default class Loader extends Component {
+export class Loader extends Component {
   render() {
-    return <div>Loader</div>;
+    return <div>
+<Puff
+  height="80"
+  width="80"
+  radius={1}
+  color="#4fa94d"
+  ariaLabel="puff-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  visible={true}
+/>
+    </div>;
   }
 }
