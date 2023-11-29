@@ -19,7 +19,7 @@ export class App extends Component {
     modalImageURL: '',
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
     event.preventDefault();
     this.setState({
       images: [],
@@ -48,7 +48,7 @@ export class App extends Component {
         },
       });
 
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         images: [...prevState.images, ...response.data.hits],
         isLoading: false,
       }));
@@ -58,26 +58,25 @@ export class App extends Component {
     }
   };
 
-  handleChange = (event) => {
+  handleChange = event => {
     this.setState({ keyword: event.target.value });
   };
 
   handleLoadMore = () => {
-    this.setState((prevState) => ({
-      page: prevState.page + 1,
-    }), () => {
-      this.fetchImages();
-    });
+    this.setState(
+      prevState => ({
+        page: prevState.page + 1,
+      }),
+      () => {
+        this.fetchImages();
+      }
+    );
   };
 
-  handleShowModal = (event) => {
-    if (event.target.nodeName !== 'IMG') {
-      return;
-    }
-
+  handleShowModal = url => {
     this.setState({
       isModalVisible: true,
-      modalImageURL: event.target.dataset.source,
+      modalImageURL: url,
     });
   };
 
@@ -85,7 +84,7 @@ export class App extends Component {
     this.setState({ isModalVisible: false });
   };
 
-  handleEscapeKey = (event) => {
+  handleEscapeKey = event => {
     if (event.key === 'Escape') {
       this.handleHideModal();
     }

@@ -23,9 +23,9 @@ export class Modal extends Component {
   render() {
     return (
       <div className={css.overlay} onClick={this.props.hideModal}>
-        <div className={css.modal} onClick={(event) => event.stopPropagation()}>
-          <img 
-          src={this.props.modalImageURL}
+        <div className={css.modal} onClick={event => event.stopPropagation()}>
+          <img
+            src={this.props.modalImageURL}
             alt="tag"
             onClick={this.handleImageClick}
           />
@@ -38,5 +38,5 @@ export class Modal extends Component {
 Modal.propTypes = {
   modalImageURL: PropTypes.string.isRequired,
   hideModal: PropTypes.func.isRequired,
-  handleEscapeKey: PropTypes.func.isRequired,
+  handleEscapeKey: PropTypes.func,
 };
