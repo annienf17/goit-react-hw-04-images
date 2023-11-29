@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import ImageGalleryItem from '../imagegalleryitem/ImageGalleryItem';
 import PropTypes from 'prop-types';
+import css from './ImageGallery.module.css';
 
 export class ImageGallery extends Component {
   render() {
     const { images, updateModalImage } = this.props;
     return (
-      <div>
+      <ul className={css.imageGallery}>
         {images.map(image => (
           <ImageGalleryItem
             key={image.id}
@@ -17,7 +18,7 @@ export class ImageGallery extends Component {
           />
         ))}
       
-      </div>
+      </ul>
     );
   }
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import css from './ImageGalleryItem.module.css';
 
 export default class ImageGalleryItem extends Component {
   render() {
@@ -10,7 +11,10 @@ export default class ImageGalleryItem extends Component {
           updateModalImage(largeImageSrc);
         }}
       >
-        <img src={src} alt={alt} />
+      <li className={css.image_gallery_li}>
+         <img className={css.image_gallery_item} src={src} alt={alt} />
+      </li>
+       
       </div>
     );
   }

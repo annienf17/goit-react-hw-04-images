@@ -1,0 +1,9 @@
+.image_gallery_li {
+ list-style: none;
+}
+.image_gallery_item {
+    width: 480px;
+    height: 360px;
+    object-fit: cover;  
+    border-radius: 5px;
+}

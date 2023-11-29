@@ -6,8 +6,8 @@ export class Button extends Component {
   render() {
     const { onClick } = this.props;
     return (
-      <div className={css.loadMore}>
-        <button onClick={onClick} className={css.button}>
+      <div className={css.load_more}>
+        <button className={css.load_more_button} onClick={onClick}>
           Load more
         </button>
       </div>
