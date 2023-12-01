@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { SearchBar } from './searchbar/SearchBar';
 import { ImageGallery } from './imagegallery/ImageGallery';
@@ -8,34 +8,26 @@ import { Button } from './button/Button';
 
 const API_KEY = '5341847-0da0fa42220482382c220c44b';
 
-export class App extends Component {
-  state = {
-    images: [],
-    keyword: '',
-    page: 1,
-    isLoading: false,
-    error: '',
-    isModalVisible: false,
-    modalImageURL: '',
-  };
+export const App = () => {
+  const [images, setImages] = useState([]);
+  const [keyword, setKeyword] = useState('');
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalImageURL, setModalImageURL] = useState('');
 
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.setState({
-      images: [],
-      page: 1,
-    });
-    this.fetchImages();
+    setImages([]);
+    setPage(1);
+    fetchImages();
   };
 
-  fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     const pageLimit = 12;
-    const { keyword, page } = this.state;
 
     try {
-      this.setState({
-        isLoading: true,
-      });
+      setIsLoading(true);
       const response = await axios.get('https://pixabay.com/api/', {
         params: {
           key: API_KEY,
@@ -48,81 +40,52 @@ export class App extends Component {
         },
       });
 
-      this.setState(prevState => ({
-        images: [...prevState.images, ...response.data.hits],
-        isLoading: false,
-      }));
+      setImages(prevImages => [...prevImages, ...response.data.hits]);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
-      this.setState({ error: 'Failed to fetch images.', isLoading: false });
+      setIsLoading(false);
     }
+  }, [page, keyword]);
+
+  const handleChange = event => {
+    setKeyword(event.target.value);
   };
 
-  handleChange = event => {
-    this.setState({ keyword: event.target.value });
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  handleLoadMore = () => {
-    this.setState(
-      prevState => ({
-        page: prevState.page + 1,
-      }),
-      () => {
-        this.fetchImages();
-      }
-    );
+  const handleShowModal = url => {
+    setIsModalVisible(true);
+    setModalImageURL(url);
   };
 
-  handleShowModal = url => {
-    this.setState({
-      isModalVisible: true,
-      modalImageURL: url,
-    });
+  const handleHideModal = () => {
+    setIsModalVisible(false);
   };
 
-  handleHideModal = () => {
-    this.setState({ isModalVisible: false });
-  };
-
-  handleEscapeKey = event => {
-    if (event.key === 'Escape') {
-      this.handleHideModal();
+  useEffect(() => {
+    if (page !== 1 && images.length > 0) {
+      fetchImages();
     }
-  };
+  }, [page, fetchImages, images.length]);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.page !== prevState.page && this.state.images.length > 0) {
-      this.fetchImages();
-    }
-  }
-
-  render() {
-    const { images, isModalVisible, modalImageURL, isLoading } = this.state;
-    return (
-      <div>
-        {isModalVisible && (
-          <Modal
-            modalImageURL={modalImageURL}
-            hideModal={this.handleHideModal}
-          />
-        )}
-
-        <SearchBar
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
+  return (
+    <div>
+      {isModalVisible && (
+        <Modal modalImageURL={modalImageURL} hideModal={handleHideModal} />
+      )}
+      <SearchBar handleChange={handleChange} handleSubmit={handleSubmit} />
+      {isLoading && <Loader />}
+      {images.length > 0 && (
+        <ImageGallery
+          images={images}
+          loadMore={handleLoadMore}
+          updateModalImage={handleShowModal}
         />
-        {isLoading && <Loader />}
-        {images.length > 0 && (
-          <ImageGallery
-            images={images}
-            loadMore={this.handleLoadMore}
-            updateModalImage={this.handleShowModal}
-          />
-        )}
-        {!isLoading && images.length > 0 && (
-          <Button onClick={this.handleLoadMore} />
-        )}
-      </div>
-    );
-  }
-}
+      )}
+      {!isLoading && images.length > 0 && <Button onClick={handleLoadMore} />}
+    </div>
+  );
+};

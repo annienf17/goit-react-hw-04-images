@@ -1,39 +1,32 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import css from './Modal.module.css';
 import * as basicLightbox from 'basiclightbox';
 
-export class Modal extends Component {
-  componentDidMount() {
-    document.addEventListener('keydown', this.props.handleEscapeKey);
-  }
+export const Modal = ({ modalImageURL, hideModal, handleEscapeKey }) => {
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [handleEscapeKey]);
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.props.handleEscapeKey);
-  }
-
-  handleImageClick = () => {
+  const handleImageClick = () => {
     const instance = basicLightbox.create(`
-      <img src="${this.props.modalImageURL}" width="800" height="600">
+      <img src="${modalImageURL}" width="800" height="600">
     `);
 
     instance.show();
   };
 
-  render() {
-    return (
-      <div className={css.overlay} onClick={this.props.hideModal}>
-        <div className={css.modal} onClick={event => event.stopPropagation()}>
-          <img
-            src={this.props.modalImageURL}
-            alt="tag"
-            onClick={this.handleImageClick}
-          />
-        </div>
+  return (
+    <div className={css.overlay} onClick={hideModal}>
+      <div className={css.modal} onClick={event => event.stopPropagation()}>
+        <img src={modalImageURL} alt="tag" onClick={handleImageClick} />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 Modal.propTypes = {
   modalImageURL: PropTypes.string.isRequired,
